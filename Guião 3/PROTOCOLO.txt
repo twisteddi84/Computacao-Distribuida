@@ -1,0 +1,11 @@
+Pub -->{"command": "pub" , "topic" : st , "messsage" : msg }  
+ 
+Sub -->{"command": "sub" , "topic" : st }
+
+List'em all -->{"command": "list"}
+
+No More Sub -->{"command": "nmsub", "topic" : st }
+
+Serialzier -->{"command" : "ser" , "serializer" : int }
+
+Send Last Message --> {"command : "lm" , "topic" : st , "message" : st}

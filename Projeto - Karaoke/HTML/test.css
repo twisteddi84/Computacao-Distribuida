@@ -1,0 +1,194 @@
+/* Reset
+-------------------------------------------------------------- */
+html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,code,del,dfn,em,img,q,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{border:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;vertical-align:baseline;margin:0;padding:0;}
+table{border-collapse:separate;border-spacing:0;margin-bottom:1.4em;}
+caption,th,td{text-align:left;font-weight:400;}
+blockquote:before,blockquote:after,q:before,q:after{content:"";}
+blockquote,q{quotes:;}
+a img{border:none;}
+
+
+/* Layout
+-------------------------------------------------------------- */
+img,video{width: auto; max-width: 100%; height: auto; margin: 0 auto 1em;}
+.container{width:88%;margin-left:auto;margin-right:auto;max-width:1400px;*zoom:1;}
+.grid-container:after{content:"";display:table;clear:both;}
+.grid-unit {position: relative;margin-left: 0;width: 100%;float: left;display: inline; margin-bottom: 2em;}
+.grid:after {content: "";display: table;clear: both;}
+*, *:after, *:before {-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;}
+
+body{
+	font-size: 16px;
+	line-height: 1.5;
+	background-color: #f6f2eb;
+	color: #524d46;
+}
+
+h1{
+	font-size: 32px;
+	text-transform: uppercase;
+	text-align: center;
+	letter-spacing: 4px;
+	margin: 15px 0;
+}
+
+p{
+	margin-bottom: 20px;
+}
+
+.site-header, .site-footer{
+	float: left;
+	width: 100%;
+}
+
+.banner-image{
+	margin-bottom: 25px;
+}
+
+.site-footer .container{
+	border-top: 1px solid rgba(0, 0, 0, 0.1);
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+	padding: 40px 0 20px;
+	text-align: center;
+}
+
+
+/* Links & Navigation
+-------------------------------------------------------------- */
+a {
+	color: #fe694c;
+}
+
+a:hover{
+	color: #d62a09;
+}
+
+.site-navigation ul{
+	text-align: center;
+	margin-bottom: 10px;
+	float: left;
+	width: 100%;
+	list-style-type: none;
+}
+
+
+.site-navigation a{
+	text-decoration: none;
+	display: inline-block;
+	text-transform: uppercase;
+	color: #524d46;
+	background-color: rgba(0, 0, 0, 0.1);
+	width: 33.333333%;
+	float: left;
+}
+
+.site-navigation a:hover{
+	background-color: rgba(0, 0, 0, 0.2);
+}
+
+@media screen and (min-width: 700px) {
+	body{
+		font-size: 18px;
+	}
+	
+	.col-3 .grid-unit {
+		width: 30%;
+	}
+
+	.grid-unit{
+		margin-right: 5%;
+	}
+	
+	.col-3 .grid-unit:last-child{
+		margin-right: 0;
+	}
+	
+	/*extra code*/
+	
+	h1{
+		font-size: 36px;
+		letter-spacing: 4px;
+		margin: 17px 0;
+	}
+	
+	.site-navigation ul{
+		margin-bottom: 11px;
+	}
+	
+	.banner-image{
+		margin-bottom: 28px;
+	}
+	
+	p{
+		margin-bottom: 22px;
+	}
+	
+	.site-footer .container{
+		padding: 45px 0 23px;
+		text-align: center;
+	}
+}
+
+@media screen and (min-width: 900px) {
+	body{
+		font-size: 22px;
+	}
+	
+	/*extra code*/
+	
+	h1{
+		font-size: 44px;
+		letter-spacing: 5px;
+		margin: 21px 0 20px;
+	}
+	
+	.site-navigation ul{
+		margin-bottom: 14px;
+	}
+	
+	.banner-image{
+		margin-bottom: 34px;
+	}
+	
+	p{
+		margin-bottom: 27px;
+	}
+	
+	.site-footer .container{
+		padding: 55px 0 27px;
+		text-align: center;
+	}
+}
+	
+@media screen and (min-width: 1100px) {
+	body{
+		font-size: 24px;
+	}
+	
+	/*extra code*/
+	
+	h1{
+		font-size: 48px;
+		letter-spacing: 6px;
+		margin: 23px 0 22px;
+	}
+	
+	.site-navigation ul{
+		margin-bottom: 15px;
+	}
+	
+	.banner-image{
+		margin-bottom: 37px;
+	}
+	
+	p{
+		margin-bottom: 30px;
+	}
+	
+	.site-footer .container{
+		padding: 60px 0 32px;
+		text-align: center;
+	}
+}
+
+

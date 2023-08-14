@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Upload de Músicas</title>
+  </head>
+  <body>
+    <h1>Upload de Músicas</h1>
+    <form action="http://localhost:5000/music" method="post" enctype="multipart/form-data">
+      <label for="audio-file">Selecione um arquivo MP3:</label>
+      <input type="file" id="audio-file" name="audio" accept="audio/mpeg">
+      <br><br>
+      <button type="submit">Enviar</button>
+    </form>
+    <h2>Músicas Adicionadas</h2>
+    <button id="list-music-btn">Listar Músicas</button>
+    <ul id="music-list">
+    </ul>
+
+    <div id="confirmation-modal" style="display:none;">
+      <p>Música Recebida!</p>
+    </div>
+    
+    <h2>Processar Música</h2>
+    <form id="process-music-form" action="http://localhost:5000/music/" method="post">
+      <label for="music-id">ID da Música:</label>
+      <input type="text" id="music-id" name="music_id">
+      <br><br>
+      <label>Instrumentos:</label>
+      <br>
+      <input type="checkbox" name="instrumentos[]" value="bass"> Bass
+      <br>
+      <input type="checkbox" name="instrumentos[]" value="drums"> Drums
+      <br>
+      <input type="checkbox" name="instrumentos[]" value="vocals"> Vocals
+      <br>
+      <input type="checkbox" name="instrumentos[]" value="other"> Other
+      <br><br>
+      <button type="submit">Processar</button>
+    </form>
+    <p id="message"></p>
+
+    <h2>Ver Progresso da Música</h2>
+    <label for="progress-music-id">ID da Música:</label>
+    <input type="text" id="progress-music-id" name="progress_music_id">
+    <button id="progress-btn">Ver Progresso</button>
+    <br><br>
+    <div id="progress-info"></div>
+    <h2>JOBS</h2>
+    <button id="list-job-btn">Listar Jobs</button>
+    <ul id="job-list">
+    </ul>
+
+    <h2>Ver Detalhes de um Job</h2>
+    <label for="progress-job-id">Job Id:</label>
+    <input type="text" id="progress-job-id" name="progress-job-id">
+    <button id="job-btn"> Ver Detalhes</button>
+    <pre id="job-details"></pre>
+
+    <h2>Reset do Sistema</h2>
+    <button id="reset-btn">Reset</button>
+    <pre id="reset-details"></pre>
+    
+    <script>
+      const JobList = document.getElementById('job-list');
+    const listJobBtn = document.getElementById('list-job-btn');
+  
+    listJobBtn.addEventListener('click', async () => {
+    try {
+      const response = await fetch('http://localhost:5000/job');
+      const data = await response.json();
+      
+      // Limpar a lista de jobs
+      JobList.innerHTML = '';
+      
+      // Converter o objeto JSON em uma string formatada
+      const formattedData = JSON.stringify(data, null, 2);
+      
+      // Criar um elemento de pré-formatado (<pre>) para exibir a string formatada
+      const preElement = document.createElement('pre');
+      
+      // Definir o texto do elemento pré-formatado como a string formatada
+      preElement.textContent = formattedData;
+      
+      // Adicionar o elemento pré-formatado à lista de jobs
+      JobList.appendChild(preElement);
+    } catch (error) {
+      console.error('Erro ao listar os jobs:', error);
+    }
+  });
+  const musicList = document.getElementById('music-list');
+  const listMusicBtn = document.getElementById('list-music-btn');
+  
+  listMusicBtn.addEventListener('click', async () => {
+    try {
+      const response = await fetch('http://localhost:5000/music');
+      const data = await response.json();
+      
+      // Limpar a lista de músicas
+      musicList.innerHTML = '';
+      
+      // Converter o objeto JSON em uma string formatada
+      const formattedData = JSON.stringify(data, null, 2);
+      
+      // Criar um elemento de pré-formatado (<pre>) para exibir a string formatada
+      const preElement = document.createElement('pre');
+      
+      // Definir o texto do elemento pré-formatado como a string formatada
+      preElement.textContent = formattedData;
+      
+      // Adicionar o elemento pré-formatado à lista de músicas
+      musicList.appendChild(preElement);
+    } catch (error) {
+      console.error('Erro ao listar as músicas:', error);
+    }
+  });
+      const form = document.querySelector('form');
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+        const response = await fetch('http://localhost:5000/music', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+        addMusicToList(formData.get('audio').name);
+        form.reset();
+      });
+
+
+      const processMusicForm = document.getElementById('process-music-form');
+      processMusicForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(processMusicForm);
+        const musicId = formData.get('music_id');
+        const instrumentos = formData.getAll('instrumentos[]');
+        console.log(instrumentos);
+        const response = await fetch(`http://localhost:5000/music/${musicId}`, {
+          method: 'POST',
+          body: JSON.stringify({'instrument_tracks_to_keep':instrumentos }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        const messageElem = document.getElementById('message');
+        if (response.ok) {
+          // Atualiza o texto do elemento de mensagem com a resposta do servidor
+          const data = await response.json();
+          messageElem.textContent = data.success;
+        }else if(response.status === 404){
+          const data = await response.json();
+          messageElem.textContent = data.error;
+        }
+        else {
+          messageElem.textContent = 'Erro ao processar música';
+        }
+
+        const data = await response.json();
+        console.log(data);
+        processMusicForm.reset();
+      });
+
+      const progressBtn = document.getElementById('progress-btn');
+      const progressInfo = document.getElementById('progress-info');
+
+      progressBtn.addEventListener('click', async () => {
+        const musicId = document.getElementById('progress-music-id').value;
+        const response = await fetch(`http://localhost:5000/music/${musicId}`);
+        const data = await response.json();
+        // Limpar o conteúdo anterior
+        progressInfo.innerHTML = '';
+
+        if(response.status === 404){
+          // Mostra a mensagem de erro
+          const errorMessage = document.createElement('p');
+          errorMessage.textContent = data.error;
+          progressInfo.appendChild(errorMessage);
+        }else{
+          // Exibir a barra de progresso
+          const progressTitle = document.createElement('h3');
+          progressTitle.textContent = 'Progresso';
+          progressInfo.appendChild(progressTitle);
+          const progressBar = document.createElement('progress');
+          progressBar.value = data.progress;
+          progressBar.max = 100;
+          progressInfo.appendChild(progressBar);
+          const progressPercentage = document.createElement('span');
+          progressPercentage.textContent = `${data.progress}%`;
+          progressInfo.appendChild(progressPercentage);
+          progressInfo.appendChild(document.createElement('br'));
+          if(response.data === 404){
+            // Mostra a mensagem de erro
+            const errorMessage = document.createElement('p');
+            errorMessage.textContent = data.error;
+            progressInfo.appendChild(errorMessage);
+          }
+          if (data.progress === 100) {
+            // A música está 100% concluída, exibir o link final
+            const finalLink = document.createElement('a');
+            finalLink.href = data.final;
+            finalLink.textContent = 'Link para a Música Final';
+            progressInfo.appendChild(finalLink);
+            progressInfo.appendChild(document.createElement('br'));
+            // Exibir os links dos instrumentos
+            const instruments = data.instruments;
+            for (let i = 0; i < instruments.length; i++) {
+              const instrument = instruments[i];
+              const instrumentName = instrument.name;
+              const instrumentLink = instrument.track;
+              const instrumentLinkElem = document.createElement('a');
+              instrumentLinkElem.href = instrumentLink;
+              instrumentLinkElem.textContent = `Link para ${instrumentName}`;
+              progressInfo.appendChild(instrumentLinkElem);
+              progressInfo.appendChild(document.createElement('br'));
+            }
+          } 
+        }
+      });
+      const jobBtn = document.getElementById('job-btn');
+      const jobDetails = document.getElementById('job-details');
+
+      jobBtn.addEventListener('click', async () => {
+        const jobId = document.getElementById('progress-job-id').value;
+        const response = await fetch(`http://localhost:5000/job/${jobId}`);
+        const data = await response.json();
+        const formattedData = JSON.stringify(data, null, 2);
+        jobDetails.textContent = formattedData;
+      });
+
+      const resetBtn = document.getElementById('reset-btn');
+      const resetDetails = document.getElementById('reset-details');
+    resetBtn.addEventListener('click', async () => {
+      // Aqui você pode colocar a lógica para apagar os arquivos temporários, músicas e cancelar os workers
+      // Certifique-se de implementar essa lógica adequadamente
+      
+      // Exemplo de lógica para fazer uma requisição ao servidor para reiniciar o sistema
+      const response = await fetch('http://localhost:5000/reset', { method: 'POST' });
+      if (response.ok) {
+        const data = await response.json();
+        // Reset realizado com sucesso
+        console.log('Sistema reiniciado com sucesso!');
+        location.reload();
+        alert('Sistema reiniciado com sucesso!');
+      } else {
+        // Ocorreu um erro ao reiniciar o sistema
+        console.error('Erro ao reiniciar o sistema.');
+      }
+    });
+    </script>
+  </body>
+</html>

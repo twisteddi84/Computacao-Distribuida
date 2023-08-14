@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Enviar Ficheiro</title>
+</head>
+<body>
+	<form enctype="multipart/form-data">
+		<input type="file" id="fileInput">
+		<button type="button" onclick="sendFile()">Enviar</button>
+	</form>
+
+	<script>
+		function sendFile() {
+			var fileInput = document.getElementById('fileInput');
+			var file = fileInput.files[0];
+			var xhr = new XMLHttpRequest();
+			var formData = new FormData();
+
+			formData.append('file', file);
+
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState === 4) {
+					if (xhr.status === 200) {
+						alert('Ficheiro recebido!');
+					} else {
+						alert('Erro ao enviar ficheiro.');
+					}
+				}
+			};
+
+			xhr.open('POST', 'http://localhost:5000/upload', true);
+			xhr.send(formData);
+		}
+	</script>
+</body>
+</html>
